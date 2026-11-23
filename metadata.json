@@ -1,0 +1,6 @@
+{
+  "name": "Viktor // Aether — Digital Identity & Portfolio",
+  "description": "Personal blog and interactive portfolio for Viktor Ilic exploring AI vibecoding, poetry, vocals, and higher consciousness with WCAG-accessible Dark and Light neon themes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

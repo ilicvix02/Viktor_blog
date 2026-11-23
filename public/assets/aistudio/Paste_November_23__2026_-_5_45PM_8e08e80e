@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIKTOR // AETHER — Digital Identity & Portfolio</title>
+
+  <!-- =====================================================================
+       1. GOOGLE FONTS & ICON LIBRARY
+       - 'Orbitron': Futuristic geometric display font for headings & brand
+       - 'Space Grotesk': Clean modern sans-serif for readable body text
+       - 'Fira Code': Monospace developer font for code tags, dates & stats
+       - Font Awesome: Used for social media and UI icons
+       ===================================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    /* =====================================================================
+       2. CSS CUSTOM PROPERTIES (COLOR PALETTE & THEME VARIABLES)
+       Requirement 1 & 4: Palette of 4 core neon colors + Light/Dark Mode.
+       By storing colors in CSS variables (--bg-primary, --neon-cyan, etc.),
+       JavaScript can switch the entire website theme by changing ONE attribute!
+       ===================================================================== */
+    :root {
+      /* Core 4-Color Neon Palette */
+      --neon-cyan: #00f3ff;
+      --neon-magenta: #ff00ff;
+      --neon-purple: #9d00ff;
+      --neon-lime: #00ff9d;
+
+      /* Dark Mode Default Surfaces */
+      --bg-primary: #06060e;
+      --bg-secondary: #0d0d1d;
+      --bg-card: rgba(16, 16, 36, 0.78);
+      --text-primary: #f2f5ff;
+      --text-secondary: #a6b0d6;
+      --border-glow: rgba(0, 243, 255, 0.35);
+      --nav-bg: rgba(6, 6, 14, 0.85);
+      --shadow-neon: 0 0 20px rgba(0, 243, 255, 0.25), 0 0 40px rgba(255, 0, 255, 0.12);
+    }
+
+    /* Light Mode Override ("Solar Prism" High-Contrast Neon Daylight) */
+    [data-theme="light"] {
+      --neon-cyan: #0077cc;
+      --neon-magenta: #c4009c;
+      --neon-purple: #6200ea;
+      --neon-lime: #008f5a;
+
+      --bg-primary: #f4f6ff;
+      --bg-secondary: #e6ebfa;
+      --bg-card: rgba(255, 255, 255, 0.9);
+      --text-primary: #101326;
+      --text-secondary: #3f4769;
+      --border-glow: rgba(98, 0, 234, 0.3);
+      --nav-bg: rgba(244, 246, 255, 0.9);
+      --shadow-neon: 0 10px 30px rgba(98, 0, 234, 0.12);
+    }
+
+    /* =====================================================================
+       3. GLOBAL RESET & BASE STYLES
+       ===================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth; /* Smooth scrolling when clicking nav links */
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    h1, h2, h3, .brand-font {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1.5px;
+    }
+
+    .mono-font {
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* =====================================================================
+       4. EXTRA CHALLENGE: TOP SCROLL PROGRESS BAR
+       Shows how far down the page the visitor has scrolled.
+       ===================================================================== */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-purple));
+      z-index: 9999;
+      box-shadow: 0 0 12px var(--neon-cyan);
+      transition: width 0.1s linear;
+    }
+
+    /* =====================================================================
+       5. NAVIGATION BAR (Requirement 11) & THEME TOGGLE (Requirement 4)
+       ===================================================================== */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px); /* Frosted glass effect */
+      border-bottom: 1px solid var(--border-glow);
+      transition: all 0.3s ease;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 900;
+      font-size: 1.15rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      position: relative;
+      padding: 0.3rem 0;
+      transition: color 0.3s ease;
+    }
+
+    /* Neon underline hover animation */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--neon-cyan);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Light / Dark Mode Button */
+    #theme-toggle {
+      background: transparent;
+      border: 1.5px solid var(--neon-cyan);
+      color: var(--text-primary);
+      padding: 0.45rem 0.9rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    #theme-toggle:hover {
+      background: var(--neon-cyan);
+      color: #06060e;
+      box-shadow: 0 0 20px var(--neon-cyan);
+      transform: translateY(-2px);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--neon-cyan);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* =====================================================================
+       6. HERO / HOME SECTION (Requirement 2 & 3)
+       Uses parallax background + custom animated SVG logo + typing effect.
+       ===================================================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 6rem 1.5rem 4rem;
+      /* Parallax background: replace 'hero-bg.jpg' with your saved hero image */
+      background-image:
+        radial-gradient(circle at center, rgba(6, 6, 14, 0.45) 0%, rgba(6, 6, 14, 0.92) 100%),
+        url('hero-bg.jpg');
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+      overflow: hidden;
+    }
+
+    /* Animated cyber grid floor overlay */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 243, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 255, 0.07) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 850px;
+    }
+
+    /* Custom SVG Logo Glow & Float Animation */
+    .hero-logo-svg {
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 1.25rem;
+      filter: drop-shadow(0 0 18px rgba(0, 243, 255, 0.75));
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* SVG path animations inside the logo */
+    .svg-spin-slow {
+      transform-origin: 50% 50%;
+      animation: spinSlow 18s linear infinite;
+    }
+
+    .svg-pulse-wave {
+      stroke-dasharray: 120;
+      stroke-dashoffset: 120;
+      animation: drawWave 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes drawWave {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px var(--neon-cyan), 0 0 35px var(--neon-magenta);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-slogan {
+      font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+      color: #d8e2ff;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 1.8rem;
+    }
+
+    /* Mandatory Dynamic Typing Container (Requirement 3) */
+    .typing-box {
+      display: inline-block;
+      background: rgba(10, 10, 26, 0.78);
+      border: 1px solid var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+      padding: 0.85rem 1.75rem;
+      border-radius: 12px;
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(1.05rem, 2.5vw, 1.5rem);
+      color: var(--neon-cyan);
+      margin-bottom: 2.2rem;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1.2em;
+      background-color: var(--neon-magenta);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blinkCursor 0.8s infinite;
+    }
+
+    @keyframes blinkCursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-neon {
+      padding: 0.85rem 1.8rem;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-neon-primary {
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    }
+
+    .btn-neon-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 30px var(--neon-magenta);
+    }
+
+    .btn-neon-outline {
+      background: rgba(6, 6, 14, 0.65);
+      color: #ffffff;
+      border: 1.5px solid var(--neon-magenta);
+    }
+
+    .btn-neon-outline:hover {
+      background: var(--neon-magenta);
+      color: #ffffff;
+      box-shadow: 0 0 25px var(--neon-magenta);
+    }
+
+    /* =====================================================================
+       7. REUSABLE SECTION LAYOUT & SCROLL REVEAL ANIMATION
+       ===================================================================== */
+    section {
+      padding: 5.5rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-tag {
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-magenta);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-divider {
+      width: 90px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+      margin: 0 auto;
+      border-radius: 3px;
+      box-shadow: 0 0 12px var(--neon-cyan);
+    }
+
+    /* Scroll Reveal Class (Activated via IntersectionObserver in JS) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =====================================================================
+       8. ABOUT ME SECTION (Requirement 5)
+       ===================================================================== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 3rem;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-neon);
+    }
+
+    .portrait-wrapper {
+      position: relative;
+      border-radius: 16px;
+      padding: 6px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta), var(--neon-purple));
+      box-shadow: 0 0 28px rgba(0, 243, 255, 0.35);
+    }
+
+    .portrait-wrapper img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      object-fit: cover;
+      aspect-ratio: 3 / 4;
+      transition: transform 0.4s ease;
+    }
+
+    .portrait-wrapper:hover img {
+      transform: scale(1.02);
+    }
+
+    .about-badge {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(6, 6, 14, 0.88);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+    }
+
+    .about-text h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--neon-cyan);
+    }
+
+    .about-text p {
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+      font-size: 1.03rem;
+    }
+
+    .identity-pillars {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.9rem;
+      margin-top: 1.5rem;
+    }
+
+    .pillar-item {
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--neon-magenta);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .pillar-item strong {
+      display: block;
+      color: var(--text-primary);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+    }
+
+    /* =====================================================================
+       9. MY SKILLS SECTION (Requirement 6: 5 Progress Bars + Stats)
+       ===================================================================== */
+    .skills-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-neon);
+    }
+
+    .skill-item {
+      margin-bottom: 1.6rem;
+    }
+
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+      font-weight: 600;
+    }
+
+    .skill-name i {
+      color: var(--neon-cyan);
+      margin-right: 0.5rem;
+    }
+
+    .skill-percent {
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-magenta);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 14px;
+      background: var(--bg-secondary);
+      border-radius: 50px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%; /* Starts at 0 and animates to data-width via JS */
+      border-radius: 50px;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+      box-shadow: 0 0 14px var(--neon-cyan);
+      transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Animated Counters Row (Extra Challenge) */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-glow);
+      text-align: center;
+    }
+
+    .stat-box {
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+
+    .stat-box:hover {
+      border-color: var(--neon-cyan);
+    }
+
+    .stat-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* =====================================================================
+       10. MY PORTFOLIO / MY WORLD (Requirement 7: 8+ Works + Lightbox + Filter)
+       ===================================================================== */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .filter-btn {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-glow);
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .portfolio-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--neon-magenta);
+      box-shadow: 0 12px 30px rgba(255, 0, 255, 0.25);
+    }
+
+    .portfolio-thumb {
+      width: 100%;
+      height: 190px;
+      background: #090918;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portfolio-thumb svg {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease;
+    }
+
+    .portfolio-card:hover .portfolio-thumb svg {
+      transform: scale(1.08);
+    }
+
+    .portfolio-info {
+      padding: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .portfolio-cat {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+    }
+
+    .portfolio-info h3 {
+      font-size: 1.05rem;
+      margin: 0.3rem 0 0.5rem;
+    }
+
+    .portfolio-info p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    /* =====================================================================
+       11. BLOG SECTION (Requirement 8: 3+ Posts + Read More Modal)
+       ===================================================================== */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 2rem;
+    }
+
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-neon);
+      transition: transform 0.3s ease;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .blog-cover {
+      height: 180px;
+      width: 100%;
+      background: #080814;
+    }
+
+    .blog-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .blog-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      color: var(--neon-magenta);
+      margin-bottom: 0.4rem;
+    }
+
+    .blog-body h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .blog-excerpt {
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .read-more-btn {
+      align-self: flex-start;
+      background: transparent;
+      border: 1.5px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .read-more-btn:hover {
+      background: var(--neon-cyan);
+      color: #06060e;
+      box-shadow: 0 0 18px var(--neon-cyan);
+    }
+
+    /* =====================================================================
+       12. CONTACT & SOCIAL NETWORKS SECTION (Requirement 9 & 10)
+       ===================================================================== */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 2.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-neon);
+    }
+
+    .social-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-link-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .social-link-card:hover {
+      border-color: var(--neon-cyan);
+      transform: translateX(6px);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.25);
+    }
+
+    .social-link-card i {
+      font-size: 1.4rem;
+      color: var(--neon-cyan);
+      width: 28px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      color: var(--neon-cyan);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-glow);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--neon-magenta);
+      box-shadow: 0 0 14px rgba(255, 0, 255, 0.25);
+    }
+
+    #form-feedback {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      display: none;
+    }
+
+    #form-feedback.error {
+      display: block;
+      background: rgba(255, 0, 85, 0.15);
+      border: 1px solid #ff0055;
+      color: #ff4d88;
+    }
+
+    #form-feedback.success {
+      display: block;
+      background: rgba(0, 255, 157, 0.15);
+      border: 1px solid var(--neon-lime);
+      color: var(--neon-lime);
+    }
+
+    /* =====================================================================
+       13. MODAL / POPUP OVERLAY (Used for Portfolio Zoom & Blog Reader)
+       ===================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 3, 10, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeInModal 0.25s ease;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-box {
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 40px rgba(0, 243, 255, 0.35);
+      border-radius: 18px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+      background: none;
+      border: none;
+      color: var(--neon-magenta);
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    /* =====================================================================
+       14. FOOTER & BACK-TO-TOP BUTTON
+       ===================================================================== */
+    footer {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-glow);
+      margin-top: 4rem;
+    }
+
+    .footer-socials {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .footer-socials a {
+      color: var(--neon-cyan);
+      font-size: 1.4rem;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .footer-socials a:hover {
+      color: var(--neon-magenta);
+      transform: translateY(-4px);
+    }
+
+    #back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 0 18px rgba(0, 243, 255, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 900;
+    }
+
+    #back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #back-to-top:hover {
+      transform: translateY(-4px);
+    }
+
+    /* =====================================================================
+       15. RESPONSIVE DESIGN (Mobile & Tablet Breakpoints - Requirement 12)
+       ===================================================================== */
+    @media (max-width: 860px) {
+      .about-grid, .contact-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--bg-secondary);
+        flex-direction: column;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--neon-cyan);
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Scroll Progress Indicator (Extra Challenge) -->
+  <div id="scroll-progress"></div>
+
+  <!-- =====================================================================
+       NAVIGATION BAR (Requirement 11)
+       ===================================================================== -->
+  <header>
+    <div class="nav-container">
+      <a href="#home" class="nav-brand">
+        <!-- Mini Custom SVG Brand Emblem -->
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+          <polygon points="50,5 95,50 50,95 5,50" stroke="#00f3ff" stroke-width="6" />
+          <path d="M32 38 L50 70 L68 38" stroke="#ff00ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>VIKTOR // AETHER</span>
+      </a>
+
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home">HOME</a></li>
+        <li><a href="#about">ABOUT</a></li>
+        <li><a href="#skills">SKILLS</a></li>
+        <li><a href="#portfolio">PORTFOLIO</a></li>
+        <li><a href="#blog">BLOG</a></li>
+        <li><a href="#contact">CONTACT</a></li>
+        <li>
+          <!-- Light / Dark Mode Switcher Button (Requirement 4) -->
+          <button id="theme-toggle" type="button">
+            <span id="theme-icon">☀</span> <span id="theme-label">Light Mode</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       HERO / HOME SECTION (Requirement 1, 2 & 3)
+       ===================================================================== -->
+  <section class="hero" id="home" style="max-width: 100%;">
+    <div class="hero-content">
+      <!-- Custom Animated SVG Logo (Sacred Geometry + Soundwave + V Monogram) -->
+      <svg class="hero-logo-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00f3ff" />
+            <stop offset="50%" stop-color="#ff00ff" />
+            <stop offset="100%" stop-color="#9d00ff" />
+          </linearGradient>
+        </defs>
+        <!-- Rotating Outer Sacred Hexagon -->
+        <polygon class="svg-spin-slow" points="100,12 176,56 176,144 100,188 24,144 24,56"
+                 stroke="url(#neonGrad)" stroke-width="3" stroke-dasharray="14 6" />
+        <!-- Inner Spiritual Circle -->
+        <circle cx="100" cy="100" r="64" stroke="#00f3ff" stroke-width="2" opacity="0.7" />
+        <!-- Animated Audio Waveform Line -->
+        <path class="svg-pulse-wave" d="M35 100 L60 100 L72 72 L86 128 L100 60 L114 134 L128 80 L140 100 L165 100"
+              stroke="#00ff9d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        <!-- Bold Neon 'V' Monogram -->
+        <path d="M68 65 L100 135 L132 65" stroke="url(#neonGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+
+      <h1 class="hero-title">VIKTOR ILIC</h1>
+      <p class="hero-slogan">Poetry • Vocals • AI Vibecoding • Higher Consciousness</p>
+
+      <!-- Mandatory Dynamic Typing Effect (Requirement 3) -->
+      <div class="typing-box">
+        <span>&gt; </span><span id="typed-text"></span><span class="cursor"></span>
+      </div>
+
+      <div class="hero-cta-group">
+        <a href="#portfolio" class="btn-neon btn-neon-primary">
+          <i class="fas fa-bolt"></i> EXPLORE MY UNIVERSE
+        </a>
+        <a href="#blog" class="btn-neon btn-neon-outline">
+          <i class="fas fa-feather-alt"></i> READ MY WRITINGS
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       ABOUT ME SECTION (Requirement 5)
+       ===================================================================== -->
+  <section id="about" class="reveal">
+    <div class="section-header">
+      <span class="section-tag">// 01. DIGITAL IDENTITY</span>
+      <h2 class="section-title">ABOUT ME</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="about-grid">
+      <!-- Neon-Edited Portrait Container -->
+      <div class="portrait-wrapper">
+        <!-- IMPORTANT: Save your generated neon portrait as 'viktor-neon.jpg' in the same folder -->
+        <img src="viktor-neon.jpg" alt="Viktor Ilic Neon Cyberpunk Portrait" />
+        <span class="about-badge"><i class="fas fa-satellite-dish"></i> @ilicv_02 // ONLINE</span>
+      </div>
+
+      <div class="about-text">
+        <h3>Bridging Soul, Sound & Synthetic Intelligence</h3>
+        <p>
+          Welcome to <strong>VIKTOR // AETHER</strong> — my personal sanctuary on the web where human emotion meets futuristic technology. I am <strong>Viktor Ilic</strong>, an AI enthusiast, creative vibecoder, vocalist, and poet driven by a deep desire to expand both my mind and spirit.
+        </p>
+        <p>
+          Whether I am crafting verses that explore the depths of human consciousness, singing melodies that resonate with raw feeling, or co-creating interactive software with AI through intuitive vibecoding, I believe technology should elevate the human soul rather than replace it.
+        </p>
+        <p>
+          My vision is to build digital experiences, sonic art, and intelligent tools that inspire curiosity, introspection, and creative freedom.
+        </p>
+
+        <!-- 4 Core Identity Pillars -->
+        <div class="identity-pillars">
+          <div class="pillar-item">
+            <strong><i class="fas fa-microchip"></i> AI & VIBECODING</strong>
+            Building intuitive web apps & creative AI workflows.
+          </div>
+          <div class="pillar-item">
+            <strong><i class="fas fa-pen-nib"></i> POETRY & LYRICS</strong>
+            Translating existential thought into rhythmic verse.
+          </div>
+          <div class="pillar-item">
+            <strong><i class="fas fa-microphone-alt"></i> VOCALS & SOUND</strong>
+            Expressing frequency, emotion, and vocal resonance.
+          </div>
+          <div class="pillar-item">
+            <strong><i class="fas fa-brain"></i> MIND EXPANSION</strong>
+            Philosophy, spirituality, and continuous self-evolution.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       MY SKILLS SECTION (Requirement 6: 5 Progress Bars + Animated Counters)
+       ===================================================================== -->
+  <section id="skills" class="reveal">
+    <div class="section-header">
+      <span class="section-tag">// 02. CAPABILITIES & FREQUENCY</span>
+      <h2 class="section-title">MY SKILLS</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="skills-container">
+      <!-- Skill 1 -->
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name"><i class="fas fa-robot"></i> AI Vibecoding & Prompt Engineering</span>
+          <span class="skill-percent">92%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" data-width="92%"></div>
+        </div>
+      </div>
+
+      <!-- Skill 2 -->
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name"><i class="fas fa-feather"></i> Poetry, Songwriting & Creative Storytelling</span>
+          <span class="skill-percent">90%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" data-width="90%"></div>
+        </div>
+      </div>
+
+      <!-- Skill 3 -->
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name"><i class="fas fa-music"></i> Vocal Performance & Harmonic Expression</span>
+          <span class="skill-percent">86%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" data-width="86%"></div>
+        </div>
+      </div>
+
+      <!-- Skill 4 (Added beyond original 3-skill template) -->
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name"><i class="fas fa-code"></i> Front-End Web Design (HTML5, CSS3, JavaScript & SVG)</span>
+          <span class="skill-percent">82%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" data-width="82%"></div>
+        </div>
+      </div>
+
+      <!-- Skill 5 (Added beyond original 3-skill template) -->
+      <div class="skill-item">
+        <div class="skill-header">
+          <span class="skill-name"><i class="fas fa-infinity"></i> Spiritual Philosophy & Intellectual Synthesis</span>
+          <span class="skill-percent">95%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" data-width="95%"></div>
+        </div>
+      </div>
+
+      <!-- Extra Challenge: Animated Numeric Counters -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-number" data-target="48">0</span>
+          <span class="stat-label">Poems Written</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="19">0</span>
+          <span class="stat-label">AI Vibecoded Prototypes</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="32">0</span>
+          <span class="stat-label">Vocal Sessions Recorded</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" data-target="100">0</span>
+          <span class="stat-label">% Creative Curiosity</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       MY PORTFOLIO / MY WORLD (Requirement 7: 8 Items + Lightbox + Filter)
+       ===================================================================== -->
+  <section id="portfolio" class="reveal">
+    <div class="section-header">
+      <span class="section-tag">// 03. CREATIVE ARCHIVE</span>
+      <h2 class="section-title">MY WORLD & PORTFOLIO</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- Extra Challenge: Interactive Category Filter Buttons -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">ALL WORKS (8)</button>
+      <button class="filter-btn" data-filter="ai">AI & VIBECODING</button>
+      <button class="filter-btn" data-filter="poetry">POETRY & VOCALS</button>
+      <button class="filter-btn" data-filter="spirit">MIND & SPIRIT</button>
+    </div>
+
+    <!-- 8 Custom Cards with Animated SVG Illustrations (Click any card for Modal) -->
+    <div class="portfolio-grid">
+      <!-- Item 1 -->
+      <article class="portfolio-card" data-category="ai"
+        data-title="NEURAL MUSE // AI Poetry Co-Pilot"
+        data-desc="An experimental vibecoded web application that pairs rhythmic verse structure with generative AI metaphors to help writers overcome creative blocks.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#070714"/>
+            <circle cx="150" cy="100" r="65" stroke="#00f3ff" stroke-width="2" fill="none" stroke-dasharray="8 4"/>
+            <circle cx="150" cy="100" r="40" stroke="#ff00ff" stroke-width="2.5" fill="none"/>
+            <path d="M90 100 Q150 30 210 100 T90 100" stroke="#00ff9d" stroke-width="2" fill="none"/>
+            <circle cx="150" cy="100" r="8" fill="#00f3ff"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">AI & Vibecoding</span>
+          <h3>Neural Muse AI</h3>
+          <p>Generative verse & metaphor assistant built through rapid AI vibecoding.</p>
+        </div>
+      </article>
+
+      <!-- Item 2 -->
+      <article class="portfolio-card" data-category="poetry"
+        data-title="ECHOES IN NEON // Spoken Word & Vocal EP"
+        data-desc="A late-night vocal and poetic collection blending atmospheric synth pads with raw spoken-word reflections on solitude, awakening, and midnight cityscapes.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#090617"/>
+            <g stroke="#ff00ff" stroke-width="4" stroke-linecap="round">
+              <line x1="70" y1="80" x2="70" y2="120"/>
+              <line x1="95" y1="55" x2="95" y2="145"/>
+              <line x1="120" y1="40" x2="120" y2="160"/>
+              <line x1="145" y1="65" x2="145" y2="135"/>
+              <line x1="170" y1="30" x2="170" y2="170" stroke="#00f3ff"/>
+              <line x1="195" y1="60" x2="195" y2="140" stroke="#00f3ff"/>
+              <line x1="220" y1="75" x2="220" y2="125" stroke="#00f3ff"/>
+            </g>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">Poetry & Vocals</span>
+          <h3>Echoes in Neon (Vocal EP)</h3>
+          <p>Original vocal harmonies layered over ambient cyberpunk soundscapes.</p>
+        </div>
+      </article>
+
+      <!-- Item 3 -->
+      <article class="portfolio-card" data-category="spirit"
+        data-title="ASTRAL GEOMETRY // Interactive Meditation Visualizer"
+        data-desc="A browser-based sacred geometry breathing guide using synchronized SVG mandalas and 432Hz harmonic tones for deep focus and mental clarity.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#060816"/>
+            <polygon points="150,25 225,155 75,155" stroke="#00f3ff" stroke-width="2.5" fill="none"/>
+            <polygon points="150,175 225,45 75,45" stroke="#9d00ff" stroke-width="2.5" fill="none"/>
+            <circle cx="150" cy="100" r="32" stroke="#ff00ff" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">Mind & Spirit</span>
+          <h3>Astral Geometry Visualizer</h3>
+          <p>Sacred geometry SVG breathing & mindfulness web experience.</p>
+        </div>
+      </article>
+
+      <!-- Item 4 -->
+      <article class="portfolio-card" data-category="poetry"
+        data-title="THE SILICON SOUL // Anthology of Modern Verse"
+        data-desc="A curated digital chapbook of 25 original poems examining love, existential philosophy, and what it means to remain deeply human in an algorithmic age.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#0a0614"/>
+            <path d="M95 155 C120 90, 175 55, 215 40 C195 85, 165 120, 115 145 Z" stroke="#00ff9d" stroke-width="2.5" fill="rgba(0,255,157,0.1)"/>
+            <line x1="85" y1="165" x2="215" y2="165" stroke="#00f3ff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">Poetry & Vocals</span>
+          <h3>The Silicon Soul Anthology</h3>
+          <p>25 original poems exploring consciousness, emotion, and infinity.</p>
+        </div>
+      </article>
+
+      <!-- Item 5 -->
+      <article class="portfolio-card" data-category="ai"
+        data-title="VIBECODE STUDIO // Prompt-to-UI Sandbox"
+        data-desc="A personal collection of interactive UI components, neon shaders, and micro-apps engineered by iterating natural-language prompts with LLMs.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#050914"/>
+            <polyline points="110,65 70,100 110,135" stroke="#00f3ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <polyline points="190,65 230,100 190,135" stroke="#ff00ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <line x1="162" y1="55" x2="138" y2="145" stroke="#00ff9d" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">AI & Vibecoding</span>
+          <h3>Vibecode UI Sandbox</h3>
+          <p>Rapidly prototyped neon interfaces crafted through AI collaboration.</p>
+        </div>
+      </article>
+
+      <!-- Item 6 -->
+      <article class="portfolio-card" data-category="spirit"
+        data-title="NOOSPHERE NOTES // Philosophy & Consciousness Map"
+        data-desc="An interconnected digital garden of essays connecting Stoic wisdom, Eastern non-duality, cognitive science, and modern artificial intelligence.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#080618"/>
+            <ellipse cx="150" cy="100" rx="85" ry="42" stroke="#00f3ff" stroke-width="2.5" fill="none"/>
+            <circle cx="150" cy="100" r="24" stroke="#ff00ff" stroke-width="3" fill="none"/>
+            <circle cx="150" cy="100" r="8" fill="#00ff9d"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">Mind & Spirit</span>
+          <h3>Noosphere Knowledge Map</h3>
+          <p>Philosophical essays bridging ancient wisdom and future tech.</p>
+        </div>
+      </article>
+
+      <!-- Item 7 -->
+      <article class="portfolio-card" data-category="poetry"
+        data-title="MIDNIGHT FREQUENCY // Acoustic & Synth Covers"
+        data-desc="Reimagined vocal interpretations of atmospheric electronic and alternative tracks, recorded with custom reverb chains and poetic interludes.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#090716"/>
+            <circle cx="150" cy="100" r="62" stroke="#ff00ff" stroke-width="2" fill="none"/>
+            <circle cx="150" cy="100" r="44" stroke="#00f3ff" stroke-width="2" fill="none" stroke-dasharray="10 6"/>
+            <circle cx="150" cy="100" r="16" fill="#9d00ff"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">Poetry & Vocals</span>
+          <h3>Midnight Frequency Sessions</h3>
+          <p>Late-night vocal recordings and atmospheric sound experiments.</p>
+        </div>
+      </article>
+
+      <!-- Item 8 -->
+      <article class="portfolio-card" data-category="ai"
+        data-title="AETHER PERSONA // Custom LLM Prompt Framework"
+        data-desc="A structured system-prompt architecture designed to turn AI models into Socratic philosophy tutors, creative editors, and coding mentors.">
+        <div class="portfolio-thumb">
+          <svg viewBox="0 0 300 200">
+            <rect width="300" height="200" fill="#060918"/>
+            <line x1="80" y1="60" x2="150" y2="100" stroke="#00f3ff" stroke-width="2"/>
+            <line x1="80" y1="140" x2="150" y2="100" stroke="#ff00ff" stroke-width="2"/>
+            <line x1="220" y1="60" x2="150" y2="100" stroke="#9d00ff" stroke-width="2"/>
+            <line x1="220" y1="140" x2="150" y2="100" stroke="#00ff9d" stroke-width="2"/>
+            <circle cx="80" cy="60" r="9" fill="#00f3ff"/>
+            <circle cx="80" cy="140" r="9" fill="#ff00ff"/>
+            <circle cx="220" cy="60" r="9" fill="#9d00ff"/>
+            <circle cx="220" cy="140" r="9" fill="#00ff9d"/>
+            <circle cx="150" cy="100" r="14" fill="#ffffff"/>
+          </svg>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-cat">AI & Vibecoding</span>
+          <h3>Aether Prompt Architecture</h3>
+          <p>Structured cognitive frameworks for deep human-AI synergy.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BLOG SECTION (Requirement 8: Brand-New Section with 3 Posts + Modal)
+       ===================================================================== -->
+  <section id="blog" class="reveal">
+    <div class="section-header">
+      <span class="section-tag">// 04. TRANSMISSIONS & ESSAYS</span>
+      <h2 class="section-title">AETHER JOURNAL (BLOG)</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="blog-grid">
+      <!-- Blog Post 1 -->
+      <article class="blog-card">
+        <div class="blog-cover">
+          <svg viewBox="0 0 400 180" width="100%" height="100%">
+            <rect width="400" height="180" fill="#070818"/>
+            <path d="M0 130 Q100 50 200 110 T400 70" stroke="#00f3ff" stroke-width="3" fill="none"/>
+            <path d="M0 150 Q120 80 240 130 T400 90" stroke="#ff00ff" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-date"><i class="far fa-calendar-alt"></i> NOVEMBER 18, 2026</span>
+          <h3>Vibecoding: Why Intuition Is the New Programming Language</h3>
+          <p class="blog-excerpt">
+            Software creation is shifting from rigid syntax memorization to pure creative direction. Here is how vibecoding empowers poets, dreamers, and thinkers to build real applications...
+          </p>
+          <button class="read-more-btn" data-post="0">READ MORE <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </article>
+
+      <!-- Blog Post 2 -->
+      <article class="blog-card">
+        <div class="blog-cover">
+          <svg viewBox="0 0 400 180" width="100%" height="100%">
+            <rect width="400" height="180" fill="#0b0618"/>
+            <circle cx="200" cy="90" r="55" stroke="#ff00ff" stroke-width="2.5" fill="none"/>
+            <circle cx="200" cy="90" r="30" stroke="#00ff9d" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-date"><i class="far fa-calendar-alt"></i> NOVEMBER 04, 2026</span>
+          <h3>Original Poem: "Frequencies Beyond the Screen"</h3>
+          <p class="blog-excerpt">
+            A reflection in verse on late-night introspection, the resonance of the human voice, and finding stillness inside a hyper-connected digital cosmos...
+          </p>
+          <button class="read-more-btn" data-post="1">READ MORE <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </article>
+
+      <!-- Blog Post 3 -->
+      <article class="blog-card">
+        <div class="blog-cover">
+          <svg viewBox="0 0 400 180" width="100%" height="100%">
+            <rect width="400" height="180" fill="#060918"/>
+            <polygon points="200,20 270,150 130,150" stroke="#00f3ff" stroke-width="2.5" fill="none"/>
+            <circle cx="200" cy="105" r="22" stroke="#9d00ff" stroke-width="2.5" fill="none"/>
+          </svg>
+        </div>
+        <div class="blog-body">
+          <span class="blog-date"><i class="far fa-calendar-alt"></i> OCTOBER 21, 2026</span>
+          <h3>Expanding Consciousness in the Age of Artificial Intelligence</h3>
+          <p class="blog-excerpt">
+            As machines grow smarter, our greatest frontier is no longer external computation—it is inner awareness, philosophical depth, and spiritual clarity...
+          </p>
+          <button class="read-more-btn" data-post="2">READ MORE <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CONTACT & SOCIAL NETWORKS SECTION (Requirement 9 & 10)
+       ===================================================================== -->
+  <section id="contact" class="reveal">
+    <div class="section-header">
+      <span class="section-tag">// 05. OPEN CHANNEL</span>
+      <h2 class="section-title">CONNECT WITH ME</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="contact-wrapper">
+      <!-- Social & Professional Identity Links (Requirement 9) -->
+      <div>
+        <h3 style="color: var(--neon-cyan); margin-bottom: 0.75rem;">Digital Presence</h3>
+        <p style="color: var(--text-secondary);">
+          Want to collaborate on an AI vibecoding project, discuss philosophy, or share music and poetry? Connect with me across my platforms or send a direct transmission.
+        </p>
+
+        <div class="social-cards">
+          <a href="https://github.com" target="_blank" rel="noopener" class="social-link-card">
+            <i class="fab fa-github"></i>
+            <div>
+              <strong>GitHub</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">AI Vibecoding & Web Experiments</div>
+            </div>
+          </a>
+
+          <a href="https://instagram.com/ilicv_02" target="_blank" rel="noopener" class="social-link-card">
+            <i class="fab fa-instagram"></i>
+            <div>
+              <strong>Instagram (@ilicv_02)</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Visual Aesthetics, Poetry & Daily Vibes</div>
+            </div>
+          </a>
+
+          <a href="https://youtube.com" target="_blank" rel="noopener" class="social-link-card">
+            <i class="fab fa-youtube"></i>
+            <div>
+              <strong>YouTube / SoundCloud</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Vocal Covers & Spoken Word Sessions</div>
+            </div>
+          </a>
+
+          <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-link-card">
+            <i class="fab fa-linkedin"></i>
+            <div>
+              <strong>LinkedIn</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Creative Technologist & AI Enthusiast</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact Form with JavaScript Validation (Requirement 10) -->
+      <form id="contact-form" novalidate>
+        <div class="form-group">
+          <label for="name">NAME *</label>
+          <input type="text" id="name" class="form-control" placeholder="Enter your name..." required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">EMAIL *</label>
+          <input type="email" id="email" class="form-control" placeholder="Enter your email address..." required />
+        </div>
+
+        <div class="form-group">
+          <label for="message">MESSAGE *</label>
+          <textarea id="message" rows="5" class="form-control" placeholder="Write your message, poem, or project idea..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-neon btn-neon-primary" style="width: 100%; justify-content: center;">
+          <i class="fas fa-paper-plane"></i> SEND TRANSMISSION
+        </button>
+
+        <!-- Dynamic Validation Alert Box -->
+        <div id="form-feedback" role="alert"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       FOOTER (Requirement 9)
+       ===================================================================== -->
+  <footer>
+    <div class="brand-font" style="font-size: 1.2rem; color: var(--neon-cyan);">VIKTOR // AETHER</div>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.3rem;">
+      Crafted with HTML5, CSS3, Custom SVG & JavaScript Vibecoding
+    </p>
+
+    <div class="footer-socials">
+      <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://instagram.com/ilicv_02" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://youtube.com" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    </div>
+
+    <p class="mono-font" style="font-size: 0.78rem; color: var(--text-secondary);">
+      &copy; 2026 Viktor Ilic. All Frequencies Reserved.
+    </p>
+  </footer>
+
+  <!-- Back To Top Floating Button (Extra Challenge) -->
+  <button id="back-to-top" title="Back to Top" aria-label="Back to Top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- =====================================================================
+       REUSABLE POPUP / MODAL WINDOW (For Portfolio Zoom & Blog Reader)
+       ===================================================================== -->
+  <div class="modal-backdrop" id="universal-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close" aria-label="Close Modal">&times;</button>
+      <div id="modal-visual" style="margin-bottom: 1.25rem; border-radius: 12px; overflow: hidden;"></div>
+      <span id="modal-meta" class="mono-font" style="color: var(--neon-magenta); font-size: 0.82rem;"></span>
+      <h2 id="modal-title" style="color: var(--neon-cyan); margin: 0.4rem 0 1rem; font-size: 1.5rem;"></h2>
+      <div id="modal-body" style="color: var(--text-primary); line-height: 1.8; white-space: pre-line;"></div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       JAVASCRIPT: ALL INTERACTIVE & DYNAMIC FEATURES
+       ===================================================================== -->
+  <script>
+    /* ---------------------------------------------------------------------
+       A. MANDATORY DYNAMIC EFFECT: TYPEWRITER HERO TITLE (Requirement 3)
+       Cycles through phrases letter-by-letter, pauses, deletes, and repeats.
+       --------------------------------------------------------------------- */
+    const phrases = [
+      "I am an AI vibecoder.",
+      "I am a poet & lyricist.",
+      "I am a vocalist & sound explorer.",
+      "I am a seeker of higher consciousness."
+    ];
+
+    const typedTextElement = document.getElementById("typed-text");
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeEffect() {
+      const currentPhrase = phrases[phraseIndex];
+
+      if (isDeleting) {
+        // Remove one character
+        typedTextElement.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        // Add one character
+        typedTextElement.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      // Control typing and deleting speed
+      let speed = isDeleting ? 45 : 85;
+
+      if (!isDeleting && charIndex === currentPhrase.length) {
+        // Pause when full phrase is typed
+        speed = 1800;
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        // Move to next phrase once deleted
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        speed = 400;
+      }
+
+      setTimeout(typeEffect, speed);
+    }
+    // Start typing animation immediately on page load
+    typeEffect();
+
+    /* ---------------------------------------------------------------------
+       B. LIGHT / DARK MODE THEME SWITCHER (Requirement 4)
+       Toggles data-theme="dark" / "light" on <html> and updates button text.
+       --------------------------------------------------------------------- */
+    const themeToggleBtn = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
+    const themeLabel = document.getElementById("theme-label");
+    const htmlRoot = document.documentElement;
+
+    themeToggleBtn.addEventListener("click", () => {
+      const currentTheme = htmlRoot.getAttribute("data-theme");
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      htmlRoot.setAttribute("data-theme", nextTheme);
+
+      if (nextTheme === "light") {
+        themeIcon.textContent = "🌙";
+        themeLabel.textContent = "Dark Mode";
+      } else {
+        themeIcon.textContent = "☀";
+        themeLabel.textContent = "Light Mode";
+      }
+    });
+
+    /* ---------------------------------------------------------------------
+       C. MOBILE NAVIGATION MENU TOGGLE (Requirement 11)
+       --------------------------------------------------------------------- */
+    const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+    const navLinks = document.getElementById("nav-links");
+
+    mobileMenuBtn.addEventListener("click", () => {
+      navLinks.classList.toggle("show");
+    });
+
+    // Close mobile menu when a link is clicked
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => navLinks.classList.remove("show"));
+    });
+
+    /* ---------------------------------------------------------------------
+       D. SCROLL PROGRESS BAR & BACK-TO-TOP VISIBILITY (Extra Challenge)
+       --------------------------------------------------------------------- */
+    const scrollProgress = document.getElementById("scroll-progress");
+    const backToTopBtn = document.getElementById("back-to-top");
+
+    window.addEventListener("scroll", () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      scrollProgress.style.width = scrollPercent + "%";
+
+      // Show Back-to-Top button after scrolling 400px
+      if (scrollTop > 400) {
+        backToTopBtn.classList.add("visible");
+      } else {
+        backToTopBtn.classList.remove("visible");
+      }
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    /* ---------------------------------------------------------------------
+       E. SCROLL REVEAL + SKILL BAR FILL + COUNTER ANIMATION
+       Uses IntersectionObserver to trigger animations when scrolled into view.
+       --------------------------------------------------------------------- */
+    let countersStarted = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("active");
+
+          // If Skills section enters view, animate progress bars & counters
+          if (entry.target.id === "skills") {
+            document.querySelectorAll(".progress-fill").forEach(bar => {
+              bar.style.width = bar.getAttribute("data-width");
+            });
+
+            if (!countersStarted) {
+              countersStarted = true;
+              document.querySelectorAll(".stat-number").forEach(counter => {
+                const target = +counter.getAttribute("data-target");
+                let count = 0;
+                const increment = Math.ceil(target / 40);
+                const updateCount = () => {
+                  count += increment;
+                  if (count < target) {
+                    counter.textContent = count;
+                    requestAnimationFrame(updateCount);
+                  } else {
+                    counter.textContent = target;
+                  }
+                };
+                updateCount();
+              });
+            }
+          }
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll(".reveal").forEach(sec => observer.observe(sec));
+
+    /* ---------------------------------------------------------------------
+       F. PORTFOLIO CATEGORY FILTERING (Extra Challenge)
+       --------------------------------------------------------------------- */
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    const portfolioCards = document.querySelectorAll(".portfolio-card");
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const filter = btn.getAttribute("data-filter");
+        portfolioCards.forEach(card => {
+          if (filter === "all" || card.getAttribute("data-category") === filter) {
+            card.style.display = "flex";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+
+    /* ---------------------------------------------------------------------
+       G. UNIVERSAL MODAL FOR PORTFOLIO LIGHTBOX (Req 7) & BLOG READER (Req 8)
+       --------------------------------------------------------------------- */
+    const modal = document.getElementById("universal-modal");
+    const modalClose = document.getElementById("modal-close");
+    const modalVisual = document.getElementById("modal-visual");
+    const modalMeta = document.getElementById("modal-meta");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+
+    // Open Portfolio Card in Lightbox Modal
+    portfolioCards.forEach(card => {
+      card.addEventListener("click", () => {
+        const svgClone = card.querySelector(".portfolio-thumb").innerHTML;
+        modalVisual.innerHTML = `<div style="height:240px;">${svgClone}</div>`;
+        modalMeta.textContent = card.querySelector(".portfolio-cat").textContent;
+        modalTitle.textContent = card.getAttribute("data-title");
+        modalBody.textContent = card.getAttribute("data-desc");
+        modal.classList.add("open");
+      });
+    });
+
+    // Full Blog Post Data Array (Requirement 8)
+    const blogPosts = [
+      {
+        date: "NOVEMBER 18, 2026 • AI & CREATIVITY",
+        title: "Vibecoding: Why Intuition Is the New Programming Language",
+        content: `For decades, building software required memorizing thousands of rigid syntax rules before you could bring a single creative vision to life. Today, vibecoding changes the paradigm completely.
+
+When you vibecode, you act as both architect and poet. You communicate intent, aesthetic atmosphere, emotional rhythm, and structural logic to an AI collaborator, iterating in real time until the code resonates with your vision.
+
+For someone passionate about poetry, music, and philosophy, vibecoding removes the wall between imagination and execution. Code becomes another artistic medium—just like a melody or a stanza.`
+      },
+      {
+        date: "NOVEMBER 04, 2026 • ORIGINAL POETRY",
+        title: "Original Poem: 'Frequencies Beyond the Screen'",
+        content: `Beneath the hum of violet neon skies,
+Where data streams like rivers in the night,
+A quiet spark within the spirit lies,
+Unbound by circuits, forged of living light.
+
+We sing our truths into the endless void,
+Each syllable a wave that cannot fade—
+No human soul was meant to be deployed
+Inside a cage that algorithms made.
+
+So tune your mind beyond the glowing glass,
+Where ancient stillness meets the future's dawn;
+All fleeting trends of silicon will pass,
+While consciousness forever carries on.`
+      },
+      {
+        date: "OCTOBER 21, 2026 • CONSCIOUSNESS & PHILOSOPHY",
+        title: "Expanding Consciousness in the Age of Artificial Intelligence",
+        content: `Every major technological revolution forces humanity to ask a fundamental question: Who are we when our tools can do what we once thought was uniquely ours?
+
+Artificial Intelligence can generate patterns, analyze data, and assist with code—yet it does not experience the awe of looking up at the stars, the catharsis of singing a heartfelt melody, or the quiet transformation of deep meditation.
+
+To thrive in the coming decades, we must cultivate both intellectual mastery of new tools and deep spiritual self-awareness. True intelligence is not just processing power; it is wisdom, empathy, and conscious presence.`
+      }
+    ];
+
+    // Open Blog Post in Modal on READ MORE click
+    document.querySelectorAll(".read-more-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const post = blogPosts[+btn.getAttribute("data-post")];
+        modalVisual.innerHTML = ""; // Text-focused reading view
+        modalMeta.textContent = post.date;
+        modalTitle.textContent = post.title;
+        modalBody.textContent = post.content;
+        modal.classList.add("open");
+      });
+    });
+
+    // Close Modal handlers (X button, backdrop click, or Escape key)
+    modalClose.addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("open");
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") modal.classList.remove("open");
+    });
+
+    /* ---------------------------------------------------------------------
+       H. CONTACT FORM VALIDATION (Requirement 10)
+       Checks that Name, valid Email, and Message are entered before confirming.
+       --------------------------------------------------------------------- */
+    const contactForm = document.getElementById("contact-form");
+    const formFeedback = document.getElementById("form-feedback");
+
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault(); // Prevent page reload
+
+      const nameVal = document.getElementById("name").value.trim();
+      const emailVal = document.getElementById("email").value.trim();
+      const messageVal = document.getElementById("message").value.trim();
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!nameVal || !emailVal || !messageVal) {
+        formFeedback.className = "error";
+        formFeedback.textContent = "⚠ Please fill in all required fields (Name, Email, and Message).";
+        return;
+      }
+
+      if (!emailPattern.test(emailVal)) {
+        formFeedback.className = "error";
+        formFeedback.textContent = "⚠ Please enter a valid email address (e.g., name@example.com).";
+        return;
+      }
+
+      // Exact confirmation message specified in Requirement 10
+      formFeedback.className = "success";
+      formFeedback.textContent = "✔ Thank you! Your message has been sent.";
+      contactForm.reset();
+    });
+  </script>
+</body>
+</html>
